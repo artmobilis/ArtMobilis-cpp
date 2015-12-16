@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	ofBackground(255,255,255);
+	ofBackground(0);
 	ofSetLogLevel(OF_LOG_NOTICE);
 	ofSetOrientation(OF_ORIENTATION_90_LEFT);
 	// this makes the camera directly return grayscale image, faster!
@@ -16,6 +16,20 @@ void ofApp::setup(){
 	camera_fps = 0;
 	frames_one_sec = 0;
 	captureBg = true;
+	// imgui
+	ofSetLogLevel(OF_LOG_VERBOSE);
+
+	//required call
+	gui.setup();
+
+
+	ImGui::GetIO().MouseDrawCursor = true;
+	clear_color = ImColor(114, 144, 154);
+	show_test_window = true;
+	show_another_window = false;
+	floatValue = 0.0f;
+
+	tex_button = gui.loadImage("of.png");
 }
 
 //--------------------------------------------------------------
@@ -48,8 +62,47 @@ void ofApp::draw(){
 	ofSetColor(0x000000);
 	ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()),330,10);
 	ofDrawBitmapString("camera fps: " + ofToString(camera_fps),330,30);
-}
+    //required to call this at beginning
+    gui.begin();
 
+    // 1. Show a simple window
+    // Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
+    {
+        ImGui::Text("Hello, world!");
+        ImGui::SliderFloat("float", &floatValue, 0.0f, 1.0f);
+        ImGui::ColorEdit3("clear color", (float*)&clear_color);
+        if (ImGui::Button("Test Window")) show_test_window ^= 1;
+        if (ImGui::Button("Another Window")) show_another_window ^= 1;
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    }
+    // 2. Show another simple window, this time using an explicit Begin/End pair
+    if (show_another_window)
+    {
+        //note: ofVec2f and ImVec2f are interchangeable
+        ImGui::SetNextWindowSize(ofVec2f(200,100), ImGuiSetCond_FirstUseEver);
+        ImGui::Begin("Another Window", &show_another_window);
+        ImGui::Text("Hello");
+        ImGui::End();
+    }
+
+    // 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
+    if (show_test_window)
+    {
+        ImGui::SetNextWindowPos(ofVec2f(650, 20), ImGuiSetCond_FirstUseEver);
+        ImGui::ShowTestWindow(&show_test_window);
+    }
+
+
+    bool pressed = ImGui::ImageButton((ImTextureID)(uintptr_t)tex_button, ImVec2(200, 141));
+
+
+    //required to call this at end
+    gui.end();
+}
+void ofApp::mouseScrolled(float x, float y)
+{
+    ofLogVerbose(__FUNCTION__) << "x: " << x << " y: " << y;
+}
 //--------------------------------------------------------------
 void ofApp::keyPressed  (int key){ 
 	

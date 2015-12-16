@@ -636,7 +636,13 @@ obj/android/armv7/Release/src/main.o: \
  /home/din/of_v0.9.0_android_release/addons/ofxOpenCv/src/ofxCvFloatImage.h \
  /home/din/of_v0.9.0_android_release/addons/ofxOpenCv/src/ofxCvShortImage.h \
  /home/din/of_v0.9.0_android_release/addons/ofxOpenCv/src/ofxCvContourFinder.h \
- /home/din/of_v0.9.0_android_release/addons/ofxOpenCv/src/ofxCvHaarFinder.h
+ /home/din/of_v0.9.0_android_release/addons/ofxOpenCv/src/ofxCvHaarFinder.h \
+ /home/din/of_v0.9.0_android_release/addons/ofxImGui/src/ofxImGui.h \
+ /home/din/of_v0.9.0_android_release/addons/ofxImGui/src/imgui.h \
+ /home/din/of_v0.9.0_android_release/addons/ofxImGui/src/imconfig.h \
+ /home/din/of_v0.9.0_android_release/addons/ofxImGui/src/StyleCinder.h \
+ /home/din/of_v0.9.0_android_release/addons/ofxImGui/src/EngineOpenGLES.h \
+ /home/din/of_v0.9.0_android_release/addons/ofxImGui/src/BaseEngine.h
 
 /home/din/of_v0.9.0_android_release/libs/openFrameworks/ofMain.h:
 
@@ -1911,3 +1917,15 @@ obj/android/armv7/Release/src/main.o: \
 /home/din/of_v0.9.0_android_release/addons/ofxOpenCv/src/ofxCvContourFinder.h:
 
 /home/din/of_v0.9.0_android_release/addons/ofxOpenCv/src/ofxCvHaarFinder.h:
+
+/home/din/of_v0.9.0_android_release/addons/ofxImGui/src/ofxImGui.h:
+
+/home/din/of_v0.9.0_android_release/addons/ofxImGui/src/imgui.h:
+
+/home/din/of_v0.9.0_android_release/addons/ofxImGui/src/imconfig.h:
+
+/home/din/of_v0.9.0_android_release/addons/ofxImGui/src/StyleCinder.h:
+
+/home/din/of_v0.9.0_android_release/addons/ofxImGui/src/EngineOpenGLES.h:
+
+/home/din/of_v0.9.0_android_release/addons/ofxImGui/src/BaseEngine.h:
