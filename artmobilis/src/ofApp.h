@@ -5,7 +5,7 @@
 
 #include "ofxOpenCv.h"
 #include "ofxImGui.h"
-
+// #define IM_ARRAYSIZE(_ARR)			((int)(sizeof(_ARR)/sizeof(*_ARR)))
 class ofApp : public ofxAndroidApp{
 	
 	public:
@@ -48,10 +48,29 @@ class ofApp : public ofxAndroidApp{
         // imgui
         ofxImGui gui;
         ImVec4 clear_color;
-        bool show_test_window;
-        bool show_another_window;
 
         float floatValue;
         GLuint tex_button;
+    float						color[4];
+    float						backcolor[4];
+    int							playheadPositions[12];
+    float						speeds[12];
+    // mPreviewFboWidth 80 mPreviewFboHeight 60 margin 10 inBetween 15
+    int							w;
+    int							h;
+    int							displayHeight;
+    int							xPos;
+    int							yPos;
+    int							largeW;
+    int							largeH;
+    int							largePreviewW;
+    int							largePreviewH;
+    int							margin;
+    int							inBetween;
+
+    float						f = 0.0f;
+    char						buf[64];
+
+    bool						showGlobal ;
 
 };

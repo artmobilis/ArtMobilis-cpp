@@ -24,12 +24,25 @@ void ofApp::setup(){
 
 
 	ImGui::GetIO().MouseDrawCursor = true;
+    ImGui::GetIO().FontGlobalScale = 4.0f;
 	clear_color = ImColor(114, 144, 154);
-	show_test_window = true;
-	show_another_window = false;
+    showGlobal = true;
 	floatValue = 0.0f;
 
 	tex_button = gui.loadImage("of.png");
+    // imgui
+    margin = 3;
+    inBetween = 3;
+    // mPreviewFboWidth 80 mPreviewFboHeight 60 margin 10 inBetween 15 mPreviewWidth = 160;mPreviewHeight = 120;
+    w = 80 + margin;
+    h = 60 * 2.3;
+    largeW = (80 + margin) * 4;
+    largeH = (60 + margin) * 5;
+    largePreviewW = 80 + margin;
+    largePreviewH = (60 + margin) * 2.4;
+    displayHeight = 900 - 50;
+
+    static float f = 0.0f;
 }
 
 //--------------------------------------------------------------
@@ -60,44 +73,94 @@ void ofApp::draw(){
 	gray.draw(5,5);
 	contourFinder.draw(5,5);
 	ofSetColor(0x000000);
-	ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()),330,10);
-	ofDrawBitmapString("camera fps: " + ofToString(camera_fps),330,30);
+
     //required to call this at beginning
     gui.begin();
-
-    // 1. Show a simple window
-    // Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
-    {
-        ImGui::Text("Hello, world!");
-        ImGui::SliderFloat("float", &floatValue, 0.0f, 1.0f);
-        ImGui::ColorEdit3("clear color", (float*)&clear_color);
-        if (ImGui::Button("Test Window")) show_test_window ^= 1;
-        if (ImGui::Button("Another Window")) show_another_window ^= 1;
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    }
     // 2. Show another simple window, this time using an explicit Begin/End pair
-    if (show_another_window)
+    if (showGlobal)
     {
         //note: ofVec2f and ImVec2f are interchangeable
-        ImGui::SetNextWindowSize(ofVec2f(200,100), ImGuiSetCond_FirstUseEver);
-        ImGui::Begin("Another Window", &show_another_window);
-        ImGui::Text("Hello");
+        ImGui::SetNextWindowSize(ofVec2f(1200,700), ImGuiSetCond_FirstUseEver);
+        sprintf(buf, "Fps %c %d###fps", "|/-\\"[(int)(ImGui::GetTime() / 0.25f) & 3], (int)ofGetFrameRate());
+        ImGui::Begin(buf, &showGlobal);
+
+        // fps
+        static ImVector<float> values; if (values.empty()) { values.resize(100); memset(&values.front(), 0, values.size()*sizeof(float)); }
+        static int values_offset = 0;
+        static float refresh_time = -1.0f;
+        if (ui::GetTime() > refresh_time + 1.0f / 6.0f)
+        {
+            refresh_time = ui::GetTime();
+            values[values_offset] = ofGetFrameRate();
+            values_offset = (values_offset + 1) % values.size();
+        }
+        sprintf(buf, "%d", (int)ofGetFrameRate());
+        ui::PlotLines("FPS", &values.front(), (int)values.size(), values_offset, buf, 0.0f, 80.0f, ImVec2(400, 200));
+
+        sprintf(buf, "Camera fps %c %d", "|/-\\"[(int)(ImGui::GetTime() / 0.25f) & 3], camera_fps);
+        ImGui::Text(buf);
+
+        ImGui::SliderFloat("float", &floatValue, 0.0f, 1.0f);
+        ImGui::ColorEdit3("clear color", (float*)&clear_color);
+
+        bool pressed = ImGui::ImageButton((ImTextureID)(uintptr_t)tex_button, ImVec2(200, 141));
         ImGui::End();
     }
-
-    // 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
-    if (show_test_window)
-    {
-        ImGui::SetNextWindowPos(ofVec2f(650, 20), ImGuiSetCond_FirstUseEver);
-        ImGui::ShowTestWindow(&show_test_window);
-    }
-
-
-    bool pressed = ImGui::ImageButton((ImTextureID)(uintptr_t)tex_button, ImVec2(200, 141));
-
-
     //required to call this at end
     gui.end();
+    /*
+     ui::SetNextWindowSize(ImVec2(largePreviewW + 20, largePreviewH), ImGuiSetCond_Once);
+	ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
+	sprintf_s(buf, "Fps %c %d###fps", "|/-\\"[(int)(ImGui::GetTime() / 0.25f) & 3], (int)mParameterBag->iFps);
+	ui::Begin(buf);
+	{
+		ImGui::PushItemWidth(mParameterBag->mPreviewFboWidth);
+		// fps
+		static ImVector<float> values; if (values.empty()) { values.resize(100); memset(&values.front(), 0, values.size()*sizeof(float)); }
+		static int values_offset = 0;
+		static float refresh_time = -1.0f;
+		if (ui::GetTime() > refresh_time + 1.0f / 6.0f)
+		{
+			refresh_time = ui::GetTime();
+			values[values_offset] = mParameterBag->iFps;
+			values_offset = (values_offset + 1) % values.size();
+		}
+		if (mParameterBag->iFps < 12.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+		ui::PlotLines("FPS", &values.front(), (int)values.size(), values_offset, mParameterBag->sFps.c_str(), 0.0f, 300.0f, ImVec2(0, 30));
+		if (mParameterBag->iFps < 12.0) ui::PopStyleColor();
+
+		// Checkbox
+		ui::Checkbox("Tex", &showTextures);
+		ui::SameLine();
+		ui::Checkbox("Fbos", &showFbos);
+		ui::SameLine();
+		ui::Checkbox("Shada", &showShaders);
+
+		ui::Checkbox("Audio", &showAudio);
+		ui::SameLine();
+		ui::Checkbox("Cmd", &showConsole);
+		ui::SameLine();
+		ui::Checkbox("OSC", &showOSC);
+
+		ui::Checkbox("MIDI", &showMidi);
+		ui::SameLine();
+		ui::Checkbox("Test", &showTest);
+		if (ui::Button("Save Params"))
+		{
+			// save warp settings
+			mBatchass->getWarpsRef()->save("warps1.xml");
+			// save params
+			mParameterBag->save();
+		}
+
+		mParameterBag->iDebug ^= ui::Button("Debug");
+		ui::SameLine();
+		mParameterBag->mRenderThumbs ^= ui::Button("Thumbs");
+		ui::PopItemWidth();
+		if (ui::Button("Stop Loading")) mBatchass->stopLoading();
+	}
+	ui::End();
+     * */
 }
 void ofApp::mouseScrolled(float x, float y)
 {
