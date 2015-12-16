@@ -1,0 +1,7 @@
+set solib-search-path /home/din/of_v0.9.0_android_release/apps/ArtMobilis-cpp/artmobilis/obj/local/armeabi-v7a:/home/din/of_v0.9.0_android_release/apps/ArtMobilis-cpp/artmobilis/libs/armeabi-v7a
+set sysroot /home/din/Android/Sdk/ndk-bundle/platforms/android-19/arch-arm/
+directory /home/din/Android/Sdk/ndk-bundle/platforms/android-19/arch-arm/usr/include
+directory /home/din/of_v0.9.0_android_release/apps/ArtMobilis-cpp/artmobilis/src
+directory /home/din/Android/Sdk/ndk-bundle/sources/cxx-stl/system
+directory /home/din/of_v0.9.0_android_release/apps/ArtMobilis-cpp/artmobilis/libs/armeabi-v7a
+
